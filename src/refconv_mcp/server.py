@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import os
 import re
 from datetime import datetime
@@ -16,6 +17,11 @@ from . import gridref, streetview
 # Load .env from the project root (two levels above this file) if present.
 # run.sh also sources it; this is a fallback for running the module directly.
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
+
+# httpx logs full request URLs at INFO, and those URLs include the API key
+# (Google takes it as a query parameter). Keep it out of MCP stderr logs.
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("httpcore").setLevel(logging.WARNING)
 
 mcp = FastMCP(
     "refconv",
